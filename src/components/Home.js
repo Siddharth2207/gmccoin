@@ -1,12 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import './Home.css' 
-import logo from './assets/GMC-logo.png' 
 import logo2 from './assets/GMC_Logo_white_5k.jpg'  
 import Swal from 'sweetalert2'
 import TronLinkPro from './TronLinkPro'
-import axios from 'axios'
- 
-
 
 function Home() { 
 
@@ -57,15 +53,13 @@ function Home() {
                     try {
                         setInstallFlag(true) 
                         setlogInFlag(true)
-                        setAddress(window.tronWeb.defaultAddress.base58) 
-                        let instance = await window.tronWeb.contract().at('TRcrEmnaBQWZVBjiezaVQdw9Q1CkbEjqxB'); 
+                        setAddress(window.tronWeb.defaultAddress.base58) //TR9o7SXc9KqPrAxuBVb1gHMCykybxTK3GR 
+                        let instance = await window.tronWeb.contract().at('TAx8Jq65YhvXc5saxFsqfLzKEwbQ1EdK64'); 
                         setContract(instance)      
-    
-                        console.log("Address : " , window.tronWeb.defaultAddress.base58 )  
                         const account = await window.tronWeb.trx.getAccount(window.tronWeb.defaultAddress.base58)  
-                        console.log("Account : " , account) 
+                        
                         if(account.assetV2){  
-                            const temBal = account.assetV2.find(asset => asset.key == '1000871') 
+                            const temBal = account.assetV2.find(asset => asset.key === '1002357') 
                             if(temBal ){  
                                 setAccountBal(temBal.value/100)
                             }else{
@@ -76,22 +70,18 @@ function Home() {
                         }
                          
                         let bal = await instance.balanceOf( window.tronWeb.defaultAddress.base58).call()  
-                        console.log(bal.toNumber() / 100)
                         setBalance(bal.toNumber() / 100 ) 
     
                         let prof = await instance.rewardscheck( window.tronWeb.defaultAddress.base58).call()   
-                        console.log(prof.toNumber())
                         setProfit(prof.toNumber() / 100 ) 
                         
                         let clamt = await instance.checkClaim().call()   
-                        console.log(clamt.toNumber())
                         setClaim(clamt.toNumber() / 100 ) 
 
                         Swal.hideLoading()  
                         
                     } catch (error) {
                         const msg = error.message ? error.message : error  
-                            console.log('error : ' , error ) 
                             Swal.fire({
                                 icon: 'error',
                                 title: 'Error',
@@ -100,7 +90,6 @@ function Home() {
                         })
                     }
                 }else{ 
-                    console.log("Here : " , window.tronWeb)
                     setInstallFlag(true) 
                     setlogInFlag(false)
                 }
@@ -112,11 +101,10 @@ function Home() {
 
     } , [])  
 
-    const investButtonClick = async () => { 
-        console.log("Invest button click: " , investAmt )    
+    const investButtonClick = async () => {  
     
         try { 
-            if(investAmt == 0 || investAmt < 0 || isNaN(investAmt) ){
+            if(investAmt === 0 || investAmt < 0 || isNaN(investAmt) ){
                 Swal.fire({
                     icon: 'info',
                     text: `Amount must be greater than zero`, 
@@ -129,10 +117,10 @@ function Home() {
                       })
                 }else{
                     Swal.showLoading()  
-                    let result = await contract.deposit().send({
+                    await contract.deposit().send({
                         feeLimit:100_000_000,
                         callValue:0,
-                    tokenId:1000871,
+                    tokenId:1002357,
                     tokenValue: investAmt * 100 ,
                     shouldPollResponse:true
                     });    
@@ -149,7 +137,7 @@ function Home() {
             }           
         } catch (error) {  
                 const msg = error.message ? error.message : error  
-                console.log('error : ' , error ) 
+              
                 Swal.fire({
                     icon: 'error',
                     title: 'Error',
@@ -162,7 +150,7 @@ function Home() {
     } 
 
     const withdrawButtonClick = async () => { 
-        console.log("Ant: " , withdrawAmt )  
+ 
         try {  
 
             if(withdrawAmt <= 0 || isNaN(withdrawAmt)) {
@@ -186,7 +174,7 @@ function Home() {
                           })
                     }else{
                         Swal.showLoading() 
-                        let result = await contract.withdraw(withdrawAmt * 100).send({
+                        await contract.withdraw(withdrawAmt * 100).send({
                                         feeLimit:100_000_000,
                                         callValue:0,
                                     shouldPollResponse:true
@@ -209,7 +197,7 @@ function Home() {
 
         } catch (error) {  
                 const msg = error.message ? error.message : error  
-                console.log('error : ' , error ) 
+
                 Swal.fire({
                     icon: 'error',
                     title: 'Error',
@@ -229,13 +217,13 @@ function Home() {
                     })            
             }else{
                 Swal.showLoading() 
-                console.log("Profit : " , profit)   
-                let result = await contract.getRewards().send({
-                    feeLimit:100_000_000,
+
+                 await contract.getRewards().send({
+                    feeLimit:100_000_000,   
                     callValue:0,
                     shouldPollResponse:true
                 });   
-                console.log(result) 
+
                 Swal.fire({
                     icon: 'success',
                     title: 'Success'
@@ -246,7 +234,7 @@ function Home() {
 
         }catch(error){
             const msg = error.message ? error.message : error  
-                console.log('error : ' , error ) 
+
                 Swal.fire({
                     icon: 'error',
                     title: 'Error',
@@ -268,7 +256,7 @@ function Home() {
                 })
             }else{ 
                 let time = await contract.checkTimeOf().call()
-                console.log("Time : " , time.toNumber())  
+ 
 
                 if(time.toNumber() + 345600 > Math.floor(Date.now() / 1000) ) { 
                     const rem = ( (time.toNumber() + 345600) - Math.floor(Date.now() / 1000) ) / 3600  
@@ -277,10 +265,10 @@ function Home() {
                             title: `Please wait for ${rem} hours for claim period to end .`
                             }) 
                 }else{
-                        console.log("Claimed") 
+
                         Swal.showLoading() 
-                        console.log("Claim : " , claim)   
-                        let result = await contract.claim().send({
+
+                         await contract.claim().send({
                             feeLimit:100_000_000,
                             callValue:0,
                             shouldPollResponse:true
@@ -296,7 +284,7 @@ function Home() {
             }
         }catch(error){
             const msg = error.message ? error.message : error  
-                console.log('error : ' , error ) 
+ 
                 Swal.fire({
                     icon: 'error',
                     title: 'Error',

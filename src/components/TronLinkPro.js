@@ -1,21 +1,17 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import TronLinkLogo from './assets/TronLinkLogo.png' 
 import './TronLinkPro.css' 
 
 
 function TronLinkPro(props) {  
    
-    const WEBSTORE_URL = 'https://chrome.google.com/webstore/detail/ibnejdfjmmkpcnlpebklmnkoeoihofec/';
-
     const logo = (
         <div className='logo'>
             <img src={ TronLinkLogo } alt='TronLink logo' />
         </div>
     ); 
 
-    const openTronLink = () => {
-        window.open(WEBSTORE_URL, '_blank');
-    }; 
+    
 
     const Install = () =>{
         return(
@@ -30,8 +26,8 @@ function TronLinkPro(props) {
                                     <div className="subheading">
                                     <h3 className="logo-text" style={{color: 'red' ,  fontFamily: 'Oswald' }}> 
                                     To create a post or tip others you must install TronLink. TronLink is a TRON wallet for the browser
-                                that can be <a href={ WEBSTORE_URL } target='_blank' rel='noopener noreferrer'>installed from the Chrome Webstore</a>.
-                                Once installed, return back and refresh the page.
+                                    that can be installed as extension . 
+                                    Once installed, return back and refresh the page.
                                     </h3>
                                     </div>
                                     
@@ -55,7 +51,7 @@ function TronLinkPro(props) {
                 <div className="content-heading col-sm-6">
                     <div className="subheading">
                     <h3 className="logo-text" style={{color: 'red' ,  fontFamily: 'Oswald' }}> 
-                         TronLink is installed but you must first log in. Open TronLink from the browser bar and set up your
+                         Wallet is installed but you must first log in. Open Wallet from the browser bar and set up your
                          first wallet or decrypt a previously-created wallet.
                     </h3>
                     </div>
